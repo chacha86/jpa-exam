@@ -1,6 +1,4 @@
-package com.example.jpaExam;
-
-import org.springframework.stereotype.Component;
+package com.example.jpaExam.article;
 
 public class MySQLDB implements MyDB{
     public void run() {

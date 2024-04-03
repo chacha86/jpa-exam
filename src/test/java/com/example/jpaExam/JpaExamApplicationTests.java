@@ -1,10 +1,12 @@
 package com.example.jpaExam;
 
+import com.example.jpaExam.article.Article;
+import com.example.jpaExam.article.ArticleRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -68,4 +70,60 @@ class JpaExamApplicationTests {
         Article article = articleRepository.findById(2).get();
         articleRepository.delete(article);
     }
+
+    @Autowired
+    AccountRepository accountRepository;
+
+    // 트랜잭션
+    @Test
+    void t7() {
+        Account account1 = new Account();
+        account1.setOwner("hong");
+        account1.setAmount(10000);
+
+        Account account2 = new Account();
+        account2.setOwner("kim");
+        account2.setAmount(10000);
+
+        accountRepository.save(account1);
+        accountRepository.save(account2);
+
+    }
+
+    // 트랜잭션을 제대로 처리하지 않으면 데이터가 꼬일 수 있음
+    @Test
+    void t8() {
+        // hong -> kim 1000원 보내기
+        Account hong = accountRepository.findById(1).get();
+        Account kim = accountRepository.findById(2).get();
+
+        hong.setAmount(hong.getAmount() - 1000); // 1000 감소
+        accountRepository.save(hong);
+
+        if(true) {
+            throw new RuntimeException("강제로 예외 발생");
+        }
+
+        kim.setAmount(kim.getAmount() + 1000); // 1000 증가
+        accountRepository.save(kim);
+
+    }
+    @Test
+    @Transactional
+    void t9() {
+        Account hong = accountRepository.findById(1).get();
+        Account kim = accountRepository.findById(2).get();
+
+        hong.setAmount(hong.getAmount() - 1000); // 1000 감소
+        accountRepository.save(hong);
+
+        if(true) {
+            throw new RuntimeException("강제로 예외 발생");
+        }
+
+        kim.setAmount(kim.getAmount() + 1000); // 1000 증가
+        accountRepository.save(kim);
+
+    }
+
 }

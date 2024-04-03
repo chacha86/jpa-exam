@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
@@ -110,6 +111,7 @@ class JpaExamApplicationTests {
     }
     @Test
     @Transactional
+    @Rollback(false)
     void t9() {
         Account hong = accountRepository.findById(1).get();
         Account kim = accountRepository.findById(2).get();
@@ -117,13 +119,45 @@ class JpaExamApplicationTests {
         hong.setAmount(hong.getAmount() - 1000); // 1000 감소
         accountRepository.save(hong);
 
-        if(true) {
-            throw new RuntimeException("강제로 예외 발생");
-        }
+//        if(true) {
+//            throw new RuntimeException("강제로 예외 발생");
+//        }
 
         kim.setAmount(kim.getAmount() + 1000); // 1000 증가
         accountRepository.save(kim);
 
+    }
+
+    // JPA -> 영속성 컨텍스트
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t10() {
+        Article article1 = new Article();
+        article1.setTitle("제목3");
+        article1.setContent("내용3");
+        articleRepository.save(article1);
+
+        Article article2 = new Article();
+        article2.setTitle("제목4");
+        article2.setContent("내용4");
+        articleRepository.save(article2);
+
+        // DB에서 바로 꺼내오는 것이 아니다.
+        // 1차 캐시에 저장되어 있는 것을 가져옴
+        Article target = articleRepository.findById(article1.getId()).get();
+        System.out.println(target.getTitle());
+        System.out.println(target.getContent());
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t11() {
+        Article article = articleRepository.findById(3).get();
+        System.out.println(article.getTitle());
+        System.out.println(article.getContent());
     }
 
 }

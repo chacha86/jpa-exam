@@ -215,10 +215,8 @@ class JpaExamApplicationTests {
         article.setTitle("제목44");
         article.setContent("내용44");
 
-//        articleRepository.save(article); // update 쿼리 날라감
+//        articleRepository.save(article); // update 쿼리 날라감. dirty checking에 의해 처리되므로 굳이 하지 않아도 된다.
     }
-
-    // 영속성 컨텍스트
 
     // 연관 관계
 

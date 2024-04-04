@@ -1,9 +1,7 @@
 package com.example.jpaExam.article;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.jpaExam.member.Member;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +19,9 @@ public class Article {
     private int id;
     private String title;
     private String content;
+
+    // 단방향 매핑
+    @ManyToOne
+    private Member member;
 
 }

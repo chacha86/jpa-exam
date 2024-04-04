@@ -2,6 +2,8 @@ package com.example.jpaExam;
 
 import com.example.jpaExam.article.Article;
 import com.example.jpaExam.article.ArticleRepository;
+import com.example.jpaExam.member.Member;
+import com.example.jpaExam.member.MemberRepository;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -215,12 +217,42 @@ class JpaExamApplicationTests {
         article.setTitle("제목44");
         article.setContent("내용44");
 
-//        articleRepository.save(article); // update 쿼리 날라감
     }
 
-    // 영속성 컨텍스트
+    @Autowired
+    MemberRepository memberRepository;
 
-    // 연관 관계
+    // 연관 관
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t15() {
+        Member member = new Member();
+        member.setName("회원1");
+        memberRepository.save(member);
+
+        Article article = new Article();
+        article.setTitle("제목1");
+        article.setContent("내용1");
+        article.setMember(member);
+
+        articleRepository.save(article);
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t16() {
+        Article article = articleRepository.findById(1).get();
+
+        System.out.println("제목 : " + article.getTitle());
+        System.out.println("내용 : " + article.getContent());
+        System.out.println("작성자 : " + article.getMember().getName());
+
+    }
+
+
 
     // 지연로딩
 

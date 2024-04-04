@@ -1,11 +1,15 @@
 package com.example.jpaExam.article;
 
 import com.example.jpaExam.member.Member;
+import com.example.jpaExam.article.tag.Tag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter

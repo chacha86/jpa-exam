@@ -13,6 +13,7 @@ import org.springframework.test.annotation.Rollback;
 
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 class JpaExamApplicationTests {
@@ -287,6 +288,115 @@ class JpaExamApplicationTests {
             System.out.println(article.getTitle());
         }
 
+    }
+
+    // 양방향 관계 실습1 - 저장
+    // 관계의 주인이 아닌 경우로 저장하면 DB 반영 안됨. member_id null로 비어있음.
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t19() {
+
+        Member member = new Member();
+        member.setName("회원1");
+
+        Article article1 = new Article();
+        article1.setTitle("제목1");
+        article1.setContent("내용1");
+
+        Article article2 = new Article();
+        article2.setTitle("제목2");
+        article2.setContent("내용2");
+
+        member.getArticles().add(article1);
+        member.getArticles().add(article2);
+
+        memberRepository.save(member);
+        articleRepository.save(article1);
+        articleRepository.save(article2);
+
+    }
+
+    // 양방향 관계 실습2 - 저장
+    // member articles에 article 추가해도 DB에 반영 안됨.
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t20() {
+
+        Member member = memberRepository.findById(1).get();
+
+        Article article1 = new Article();
+        article1.setTitle("제목3");
+        article1.setContent("내용3");
+
+        member.getArticles().add(article1);
+
+    }
+
+    // 양방향 관계 실습3 - 저장
+    // 관계의 주인인 article에 member를 추가하면 DB에 반영됨.
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t21() {
+        Member member;
+        Optional<Member> om = memberRepository.findById(1);
+        member = om.orElse(null);
+
+        if(om.isEmpty()) {
+            Member newMember = new Member();
+            newMember.setName("회원1");
+            member = memberRepository.save(newMember);
+        }
+
+        Article article1 = new Article();
+        article1.setTitle("제목1");
+        article1.setContent("내용1");
+
+        Article article2 = new Article();
+        article2.setTitle("제목2");
+        article2.setContent("내용2");
+
+        article1.setMember(member);
+        article2.setMember(member);
+
+        articleRepository.save(article1);
+        articleRepository.save(article2);
+
+    }
+
+    // 양방향 관계 실습4 - 한 트랜잭션 안에서 데이터 일관성 유지. 동기화
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t22() {
+
+//        Member member = memberRepository.findById(1).get();
+        Member member = new Member();
+        member.setName("회원2");
+        memberRepository.save(member);
+
+        Article article1 = new Article();
+        article1.setTitle("제목3");
+        article1.setContent("내용3");
+
+        Article article2 = new Article();
+        article2.setTitle("제목4");
+        article2.setContent("내용4");
+
+        article1.setMember(member);
+        article2.setMember(member);
+
+        articleRepository.save(article1);
+        articleRepository.save(article2);
+
+        System.out.println("====================");
+        for(Article article : member.getArticles()) {
+            System.out.println(article.getTitle());
+        }
+        System.out.println("====================");
+        // 제목3, 제목4 안나옴
     }
 
     // 지연로딩

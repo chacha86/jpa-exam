@@ -234,7 +234,7 @@ class JpaExamApplicationTests {
         Article article = new Article();
         article.setTitle("제목1");
         article.setContent("내용1");
-        article.setMember(member);
+//        article.setMember(member);
 
         articleRepository.save(article);
 
@@ -248,11 +248,46 @@ class JpaExamApplicationTests {
 
         System.out.println("제목 : " + article.getTitle());
         System.out.println("내용 : " + article.getContent());
-        System.out.println("작성자 : " + article.getMember().getName());
+//        System.out.println("작성자 : " + article.getMember().getName());
 
     }
 
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t17() {
+        Member member = new Member();
+        member.setName("회원1");
 
+        Article article1 = new Article();
+        article1.setTitle("제목1");
+        article1.setContent("내용1");
+
+        Article article2 = new Article();
+        article2.setTitle("제목2");
+        article2.setContent("내용2");
+
+        memberRepository.save(member);
+        articleRepository.save(article1);
+        articleRepository.save(article2);
+
+        member.getArticles().add(article1);
+        member.getArticles().add(article2);
+
+    }
+
+    @Test
+    @Transactional
+    void t18() {
+        Member member = memberRepository.findById(2).get();
+
+        List<Article> articles = member.getArticles();
+
+        for(Article article : articles) {
+            System.out.println(article.getTitle());
+        }
+
+    }
 
     // 지연로딩
 

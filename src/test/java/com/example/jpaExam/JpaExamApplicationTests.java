@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -190,6 +189,190 @@ class JpaExamApplicationTests {
         System.out.println("========== article2 삭제 =========");
         articleRepository.delete(article2);
         System.out.println("==================================");
+
+    }
+
+
+    @Autowired
+    TestArticleRepository testArticleRepository;
+    @Autowired
+    TestMemberRepository testMemberRepository;
+    @Test
+    @DisplayName("단방향 설정")
+    @Transactional
+    @Rollback(false)
+    void t14() {
+        TestMember testMember = new TestMember();
+        testMember.setUsername("kim");
+
+        testMemberRepository.save(testMember);
+
+        TestArticle testArticle = new TestArticle();
+        testArticle.setTitle("제목");
+        testArticle.setBody("내용");
+
+        testArticle.setTestMember(testMember);
+
+        testArticleRepository.save(testArticle);
+    }
+
+    @Autowired
+    TestCommentRepository testCommentRepository;
+    @Test
+    @DisplayName("양방향 설정 = mappedBy 없이, 객체 연결 없이. 외래키 null. article_comments 테이블에 데이터 없음")
+    @Transactional
+    @Rollback(false)
+    void t15() {
+        TestArticle testArticle = new TestArticle();
+        testArticle.setTitle("제목2");
+        testArticle.setBody("내용2");
+
+        TestComment testComment = new TestComment();
+        testComment.setComment("댓글1");
+
+        TestComment testComment2 = new TestComment();
+        testComment2.setComment("댓글2");
+
+        testArticleRepository.save(testArticle);
+        testCommentRepository.save(testComment);
+        testCommentRepository.save(testComment2);
+
+    }
+
+    // mappedBy 없이, 객체 한쪽만(Article) 연결 - 외래키 null. article_comments 테이블에 데이터 생성
+    // 데이터가 이원화 되고 관리가 어려워짐.
+    @Test
+    @DisplayName("양방향 설정 = mappedBy 없이, 객체 한쪽만(Article) 연결 - 외래키 null. article_comments 테이블에 데이터 생성")
+    @Transactional
+    @Rollback(false)
+    void t16() {
+        TestArticle testArticle = new TestArticle();
+        testArticle.setTitle("제목2");
+        testArticle.setBody("내용2");
+
+        TestComment testComment = new TestComment();
+        testComment.setComment("댓글1");
+
+        TestComment testComment2 = new TestComment();
+        testComment2.setComment("댓글2");
+
+        testArticleRepository.save(testArticle);
+        testCommentRepository.save(testComment);
+        testCommentRepository.save(testComment2);
+
+        testArticle.getComments().add(testComment);
+        testArticle.getComments().add(testComment2);
+
+        testArticleRepository.save(testArticle);
+
+
+    }
+
+    @Test
+    @DisplayName("양방향 설정 = mappedBy 없이, 객체 한쪽만(comment) 연결 - 위와 결과 동일")
+    @Transactional
+    @Rollback(false)
+    void t17() {
+        TestArticle testArticle = new TestArticle();
+        testArticle.setTitle("제목2");
+        testArticle.setBody("내용2");
+
+        TestComment testComment = new TestComment();
+        testComment.setComment("댓글1");
+
+        testComment.setTestArticle(testArticle);
+
+        TestComment testComment2 = new TestComment();
+        testComment2.setComment("댓글2");
+        testComment2.setTestArticle(testArticle);
+
+        testArticleRepository.save(testArticle);
+        testCommentRepository.save(testComment);
+        testCommentRepository.save(testComment2);
+    }
+
+    @Test
+    @DisplayName("양방향 설정 = mappedBy 있고, 객체 한쪽만(comment) 연결. - article_comments 테이블에 데이터 생성되지 않음. 외래키 잘 들어감")
+    @Transactional
+    @Rollback(false)
+    void t18() {
+        TestArticle testArticle = new TestArticle();
+        testArticle.setTitle("제목2");
+        testArticle.setBody("내용2");
+
+        TestComment testComment = new TestComment();
+        testComment.setComment("댓글1");
+
+        testComment.setTestArticle(testArticle);
+
+        TestComment testComment2 = new TestComment();
+        testComment2.setComment("댓글2");
+        testComment2.setTestArticle(testArticle);
+
+        testArticleRepository.save(testArticle);
+        testCommentRepository.save(testComment);
+        testCommentRepository.save(testComment2);
+    }
+
+    @Test
+    @DisplayName("양방향 설정 = mappedBy 있고, 객체 한쪽만(article) 연결. - article_comments 테이블에 데이터 생성되지 않음. 외래키 null")
+    @Transactional
+    @Rollback(false)
+    void t19() {
+        TestArticle testArticle = new TestArticle();
+        testArticle.setTitle("제목2");
+        testArticle.setBody("내용2");
+
+        TestComment testComment = new TestComment();
+        testComment.setComment("댓글1");
+
+        TestComment testComment2 = new TestComment();
+        testComment2.setComment("댓글2");
+
+        testArticle.getComments().add(testComment);
+        testArticle.getComments().add(testComment2);
+
+        testArticleRepository.save(testArticle);
+        testCommentRepository.save(testComment);
+        testCommentRepository.save(testComment2);
+    }
+
+    @Test
+    @DisplayName("양방향 설정 = mappedBy 있고, 객체 한쪽(comment) 연결하고 list 다루기 - 트랜잭션 내에서 list 동기화가 안됨.")
+    @Transactional
+    @Rollback(false)
+    void t20() {
+        TestArticle testArticle = testArticleRepository.findById(1).get();
+
+        TestComment testComment = new TestComment();
+        testComment.setComment("댓글3");
+        testComment.setTestArticle(testArticle);
+
+        for (TestComment comment : testArticle.getComments()) {
+            System.out.println(comment.getComment());
+        }
+
+        testCommentRepository.save(testComment);
+
+    }
+    @Test
+    @DisplayName("양방향 설정 = mappedBy 있고, 객체 양쪽 연결하고 list 다루기 - 트랜잭션 내에서 list 동기화가 안됨.")
+    @Transactional
+    @Rollback(false)
+    void t21() {
+        TestArticle testArticle = testArticleRepository.findById(1).get();
+
+        TestComment testComment = new TestComment();
+        testComment.setComment("댓글3");
+        testComment.setTestArticle(testArticle);
+
+        testArticle.getComments().add(testComment);
+
+        for (TestComment comment : testArticle.getComments()) {
+            System.out.println(comment.getComment());
+        }
+
+        testCommentRepository.save(testComment);
 
     }
 }

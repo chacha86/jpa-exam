@@ -25,6 +25,7 @@ public class Member {
     // mappedBy 속성은 연관관계의 주인이 아닌 쪽에서 사용한다.
     // 관계의 주인??? -> 외래키를 가지고 있는 애가 주인(N쪽)
     // 양방향 관계에서는 관계의 주인에 적용된 것만 DB에 반영된다.
+    // fetch 타입 2가지 - Lazy : 지연로딩, Eager : 즉시로딩
     @OneToMany(mappedBy = "member")
     List<Article> articles = new ArrayList<>();
 

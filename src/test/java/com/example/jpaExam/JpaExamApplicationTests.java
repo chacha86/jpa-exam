@@ -286,7 +286,6 @@ class JpaExamApplicationTests {
         for(Article article : articles) {
             System.out.println(article.getTitle());
         }
-
     }
 
     // 지연로딩

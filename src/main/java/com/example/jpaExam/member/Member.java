@@ -28,4 +28,9 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<Article> articles = new ArrayList<>();
 
+    public void addArticle(Article article) {
+        article.setMember(this);
+        articles.add(article);
+    }
+
 }

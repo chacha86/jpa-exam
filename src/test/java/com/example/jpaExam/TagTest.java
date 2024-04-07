@@ -53,4 +53,72 @@ public class TagTest {
 
     }
 
+    @Test
+    @DisplayName("Cascade 없이 save - tagging 저장 안됨, article에 cascade 설정하면 추가됨")
+    @Transactional
+    @Rollback(false)
+    void t3() {
+
+        Article article = articleService.save("title3", "content3");
+        Tag tag1 = tagService.save("tag3");
+
+        Tagging tagging = new Tagging();
+        tagging.setArticle(article);
+        tagging.setTag(tag1);
+
+        article.getTaggingList().add(tagging);
+    }
+
+    @Test
+    @DisplayName("Cascade 없이 delete - tagging 삭제 안됨, article에 cascade 설정하면 삭제됨")
+    @Transactional
+    @Rollback(false)
+    void t4() {
+        Article article = articleService.findById(3);
+        articleService.delete(3);
+    }
+
+    @Test
+    @DisplayName("ophanRemoval 없이 taggingList 삭제. - test data")
+    @Transactional
+    @Rollback(false)
+    void t5() {
+        Article article = articleService.save("title5", "content5");
+        Tag tag1 = tagService.save("tag5");
+        Tag tag2 = tagService.save("tag6");
+        Tag tag3 = tagService.findById(1);
+
+        Tagging tagging = new Tagging();
+        tagging.setArticle(article);
+        tagging.setTag(tag1);
+
+        Tagging tagging2 = new Tagging();
+        tagging2.setArticle(article);
+        tagging2.setTag(tag2);
+
+        Tagging tagging3 = new Tagging();
+        tagging3.setArticle(article);
+        tagging3.setTag(tag3);
+
+        article.getTaggingList().add(tagging);
+        article.getTaggingList().add(tagging2);
+        article.getTaggingList().add(tagging3);
+    }
+
+
+    @Test
+    @DisplayName("ophanRemoval 없이 taggingList 삭제.")
+    @Transactional
+    @Rollback(false)
+    void t6() {
+        Article article = articleService.findById(4);
+        article.getTaggingList().remove(1);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t7() {
+        articleService.delete(5);
+    }
 }

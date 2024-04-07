@@ -1,5 +1,6 @@
 package com.example.jpaExam.article;
 
+import com.example.jpaExam.article.tag.Tagging;
 import com.example.jpaExam.member.Member;
 import com.example.jpaExam.article.tag.Tag;
 import jakarta.persistence.*;
@@ -26,5 +27,8 @@ public class Article {
 
     @ManyToOne
     private Member member;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
+    private List<Tagging> taggingList = new ArrayList<>();
 
 }

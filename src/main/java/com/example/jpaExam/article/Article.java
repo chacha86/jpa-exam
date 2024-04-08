@@ -1,5 +1,6 @@
 package com.example.jpaExam.article;
 
+import com.example.jpaExam.article.tag.ArticleTag;
 import com.example.jpaExam.article.tag.Tag;
 import com.example.jpaExam.member.Member;
 import jakarta.persistence.*;
@@ -28,11 +29,14 @@ public class Article {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToMany
-    @JoinTable(
-            name = "article_tag",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> tagList = new ArrayList<>();
+//    @ManyToMany // 실제로는 이렇게 안함.
+//    @JoinTable(
+//            name = "article_tag",
+//            joinColumns = @JoinColumn(name = "article_id"),
+//            inverseJoinColumns = @JoinColumn(name = "tag_id")
+//    )
+//    private List<Tag> tagList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article")
+    private List<ArticleTag> articleTags = new ArrayList<>();
 }

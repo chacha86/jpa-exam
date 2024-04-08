@@ -7,24 +7,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tag {
+public class ArticleTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
 
-//    @ManyToMany(mappedBy = "tagList")
-//    private List<Article> articles = new ArrayList<>();
+    @ManyToOne
+    private Article article;
 
-    @OneToMany(mappedBy = "tag")
-    private List<ArticleTag> articleTags = new ArrayList<>();
+    @ManyToOne
+    private Tag tag;
 
+    private LocalDateTime createdAt;
 }

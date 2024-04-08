@@ -23,4 +23,12 @@ public class ArticleService {
 
         return articleRepository.save(article);
     }
+
+    public Article save(String title, String content) {
+        Article article = new Article();
+        article.setTitle(title);
+        article.setContent(content);
+
+        return articleRepository.save(article);
+    }
 }

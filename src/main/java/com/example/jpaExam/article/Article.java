@@ -37,6 +37,6 @@ public class Article {
 //    )
 //    private List<Tag> tagList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "article", orphanRemoval = true, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<ArticleTag> articleTags = new ArrayList<>();
 }

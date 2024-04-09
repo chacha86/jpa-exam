@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import java.util.List;
+
 @SpringBootTest
 public class TagTest {
 
@@ -89,6 +91,42 @@ public class TagTest {
 
         Article article1 = articleService.findById(1);
         articleService.delete(article1); // 부모 삭제
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t4() {
+        Article article = articleService.findById(1);
+
+        List<ArticleTag> children = article.getArticleTags();
+
+        for (ArticleTag child : children) {
+            System.out.println("제목 : " + child.getArticle().getTitle());
+            System.out.println("태그 : " + child.getTag().getName());
+        }
+
+        children.remove(0);
+        System.out.println("=====================================");
+        for (ArticleTag child : children) {
+            System.out.println("제목 : " + child.getArticle().getTitle());
+            System.out.println("태그 : " + child.getTag().getName());
+        }
+
+
+        // 잘쓰면 좋다.
+        // 부모 객체 중심으로 코드를 짤 수가 있음.
+        // 다른 서비스를 호출하지 않아도 됨.
+
+        // 모르고 쓰면 큰일난다.
+        // 연관관계가 복잡한 경우에 사용하면 안된다.
+        // 한 부모가 완벽히 한 자식을 소유할 때만 사용하길 권장.
+
+        // cascade.remove => 카테고리 : 게시물
+        // cascade.remove, orphanRemoval => 신중하게 사용.
+
+
 
     }
 }

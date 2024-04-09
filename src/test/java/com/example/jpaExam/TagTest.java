@@ -58,18 +58,37 @@ public class TagTest {
         articleTagRepository.save(articleTag2);
         articleTagRepository.save(articleTag3);
         articleTagRepository.save(articleTag4);
-
-
-//        tag1.getArticles().add(article1);
-//        tag1.getArticles().add(article2);
-//        article1.getTagList().add(tag1); // OK
-//        article1.getTagList().add(tag2);
-////
-//        article2.getTagList().add(tag1);
-//        article2.getTagList().add(tag3);
     }
 
-    // 각 게시물의 태그를 출력
-    // 각 태그에 해당하는 게시물 출력
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t2() {
+        // 추가
+        Article article1 = articleService.findById(1);
+        Tag tag1 = tagService.findById(3);
 
+        ArticleTag articleTag = new ArticleTag();
+        articleTag.setArticle(article1);
+        articleTag.setTag(tag1);
+
+        article1.getArticleTags().add(articleTag);
+
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    void t3() {
+        // 삭제
+
+        // 외래키로 참조되고 있는 객체는 먼저 지울 수 없다.
+        // 참조하고 있는 객체를 먼저 지우고 참조되는 객체는 나중에 지운다.
+        // 부모(1) - 자식(N) 관계에서는 자식이 먼저 삭제되어야 한다.
+
+        Article article1 = articleService.findById(1);
+        articleService.delete(article1); // 부모 삭제
+
+    }
 }

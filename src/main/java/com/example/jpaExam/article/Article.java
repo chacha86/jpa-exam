@@ -1,14 +1,11 @@
 package com.example.jpaExam.article;
 
-import com.example.jpaExam.article.tag.Tagging;
+import com.example.jpaExam.article.tagging.Tagging;
 import com.example.jpaExam.member.Member;
-import com.example.jpaExam.article.tag.Tag;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Article {
 
     @Id
@@ -25,10 +23,12 @@ public class Article {
     private String title;
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Member member;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.PERSIST)
     private List<Tagging> taggingList = new ArrayList<>();
 
+    private LocalDateTime createDate;
 }

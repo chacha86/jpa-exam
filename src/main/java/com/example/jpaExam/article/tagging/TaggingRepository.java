@@ -1,4 +1,4 @@
-package com.example.jpaExam.article.tag;
+package com.example.jpaExam.article.tagging;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

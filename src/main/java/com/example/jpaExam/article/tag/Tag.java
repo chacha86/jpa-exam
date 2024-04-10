@@ -1,5 +1,6 @@
 package com.example.jpaExam.article.tag;
 
+import com.example.jpaExam.article.tagging.Tagging;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

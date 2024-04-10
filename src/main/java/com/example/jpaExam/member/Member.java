@@ -2,10 +2,7 @@ package com.example.jpaExam.member;
 
 import com.example.jpaExam.article.Article;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
@@ -16,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Member {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
@@ -27,5 +25,9 @@ public class Member {
     // 양방향 관계에서는 관계의 주인에 적용된 것만 DB에 반영된다.
     @OneToMany(mappedBy = "member")
     List<Article> articles = new ArrayList<>();
+
+    public Member(String name) {
+        this.name = name;
+    }
 
 }

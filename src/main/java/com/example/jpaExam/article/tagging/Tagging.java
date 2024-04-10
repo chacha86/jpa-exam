@@ -1,4 +1,4 @@
-package com.example.jpaExam.article.tag;
+package com.example.jpaExam.article.tagging;
 
 import com.example.jpaExam.article.Article;
 import com.example.jpaExam.article.tag.Tag;
@@ -30,5 +30,6 @@ public class Tagging {
     @ManyToOne
     private Tag tag;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 }

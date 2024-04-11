@@ -287,9 +287,5 @@ class JpaExamApplicationTests {
             System.out.println(article.getTitle());
         }
     }
-
-    // 지연로딩
-
-    // 영속성 전이
 }
 

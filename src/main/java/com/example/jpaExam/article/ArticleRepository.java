@@ -17,10 +17,19 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     List<Article> findByTitleAndContent(String title, String content);
 
     // 게시물 제목에 특정 단어가 포함된 게시물 검색
-    @Query("""
+    @Query(value = """
             select a
             from Article a
             where a.title LIKE concat('%', :title, '%')
     """)
     List<Article> findByTitleLike(@Param("title") String title);
+
+    @Query("""
+        select new com.example.jpaExam.article.MyResultDto(a.id, a.title, a.content)
+          from Article a
+         where a.id = 1
+    """)
+    List<MyResultDto> findTitleAndContent();
+
+
 }

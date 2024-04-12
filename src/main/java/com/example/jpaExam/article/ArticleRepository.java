@@ -4,11 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 import java.util.List;
 
 // JpaRepository 상속 받아 interface 생성
 // <대상엔터티, ID 타입>
-public interface ArticleRepository extends JpaRepository<Article, Integer> {
+public interface ArticleRepository extends JpaRepository<Article, Integer>, ArticleRepositoryCustom {
 
     // find => 하고자 액션
     // delete, findAll
@@ -39,6 +40,29 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
          ORDER BY CONCAT(YEAR(a.createDate), '-'  ,MONTH(a.createDate)) DESC
        """)
     List<CountPerYmDto> findCountPerYm();
+
+    // 검색 -> 복잡한 검색
+
+    // 제목
+    List<Article> findByTitleContaining(String title);
+
+    // 제목 + 작성자
+    List<Article> findByTitleContainingOrMemberNameContaining(String title, String name);
+
+    // 제목 + 내용
+    List<Article> findByTitleContainingOrContentContaining(String title, String content);
+
+    // 제목, 내용, 작성자 이름에 키워드가 포함된 것 검색.
+    @Query("""
+
+            select a
+      from Article a
+     where a.title like concat('%', :title, '%')
+       or a.content like concat('%', :content, '%')
+         or a.member.name like concat('%', :name, '%')
+        """)
+    List<Article> findByTitleContainingOrContentContainingOrMemberNameContaining(String title, String content, String name);
+
 
 
 }

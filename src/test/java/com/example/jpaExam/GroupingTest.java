@@ -42,4 +42,9 @@ public class GroupingTest {
             System.out.println(dto.getYm() + " : " + dto.getCnt());
         }
     }
+
+    @Test
+    void t3() {
+
+    }
 }

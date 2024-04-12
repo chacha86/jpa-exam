@@ -31,5 +31,14 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     """)
     List<MyResultDto> findTitleAndContent();
 
+    @Query("""
+        SELECT new com.example.jpaExam.article.CountPerYmDto(
+           CONCAT(YEAR(a.createDate), '-'  ,MONTH(a.createDate)), COUNT(a.id))
+          FROM Article a
+         GROUP BY CONCAT(YEAR(a.createDate), '-'  ,MONTH(a.createDate))
+         ORDER BY CONCAT(YEAR(a.createDate), '-'  ,MONTH(a.createDate)) DESC
+       """)
+    List<CountPerYmDto> findCountPerYm();
+
 
 }

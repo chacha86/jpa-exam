@@ -2,12 +2,15 @@ package com.example.jpaExam;
 
 import com.example.jpaExam.article.Article;
 import com.example.jpaExam.article.ArticleRepository;
+import com.example.jpaExam.article.CountPerYmDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
+import java.util.zip.CheckedOutputStream;
 
 @SpringBootTest
 public class GroupingTest {
@@ -33,7 +36,10 @@ public class GroupingTest {
 
     @Test
     void t2() {
-        // 월별 게시물 등록 수
-
+        // 월별 게시물 등록수
+        List<CountPerYmDto> dtoList = articleRepository.findCountPerYm();
+        for(CountPerYmDto dto : dtoList) {
+            System.out.println(dto.getYm() + " : " + dto.getCnt());
+        }
     }
 }

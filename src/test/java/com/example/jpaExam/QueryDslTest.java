@@ -17,6 +17,22 @@ public class QueryDslTest {
     @Test
     @Transactional
     void t1() {
-        List<Article> articleList = articleRepository.search();
+//        List<Article> articleList = articleRepository.search();
+    }
+
+    // 다양한 조건 검색
+    @Test
+    @Transactional
+    void t2() {
+
+        // 제목, 내용, 작성자로 검색
+        String kw = "제목";
+        List<String> types = List.of("content", "memberName");
+
+        // 제목, 내용 검색
+//        List<String> types2 = List.of("content", "title");
+
+        List<Article> searchedList = articleRepository.search(types, kw);
+
     }
 }
